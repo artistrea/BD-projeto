@@ -2,6 +2,7 @@ version: "3.3"
 
 services:
   db:
+    container_name: bd_container
     image: postgres:15.4-alpine
     restart: always
     environment:
@@ -12,6 +13,9 @@ services:
     ports:
       - 5436:5432
     volumes:
+      # map initialization scripts:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-
+#
+# Use this PostgreSQL url to connect to the database:
+# postgresql://bd_projeto:123456@localhost:5436/bd_projeto_db
 
