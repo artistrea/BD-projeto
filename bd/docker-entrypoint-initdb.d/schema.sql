@@ -1,3 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; -- uuid support
+CREATE EXTENSION IF NOT EXISTS pgcrypto; -- hash password
+
 CREATE TYPE "itemType" AS ENUM (
   'livro',
   'materialDidatico'
@@ -48,7 +51,8 @@ CREATE TABLE "Usuarios" (
   "nome" varchar(255) NOT NULL,
   "sobrenome" varchar(255) NOT NULL,
   "login" varchar(255) UNIQUE NOT NULL,
-  "hashSenha" char(60) NOT NULL
+  "hashSenha" char(60) NOT NULL,
+  "authToken" uuid DEFAULT uuid_generate_v4() UNIQUE NOT NULL
 );
 
 CREATE TABLE "Emprestimos" (
