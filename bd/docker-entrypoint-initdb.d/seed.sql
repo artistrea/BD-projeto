@@ -32,6 +32,6 @@ INSERT INTO "Usuarios"
     ("nome", "sobrenome", "login", "hashSenha")
     VALUES
     ( 
-        'Grande', 'Chefinho', 'est@est.est', crypt('est123', gen_salt('bf'))
+        'Joao', 'da Silva Flores', 'est@est.est', crypt('est123', gen_salt('bf'))
     );
 
