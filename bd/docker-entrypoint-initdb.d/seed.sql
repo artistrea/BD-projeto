@@ -1,6 +1,5 @@
-INSERT INTO "Items"
-    VALUES
-    (1, 'livro', 'ava meu a', 'metodos', TO_DATE('17/12/2015', 'DD/MM/YYYY'), 'bom', 'bsb', '');
+
+-- Inserções por Artur Padovesi ----------------------------------
 
 INSERT INTO "Usuarios"
     (
@@ -28,6 +27,10 @@ INSERT INTO "Usuarios"
         'Joao', 'da Silva Flores', 'est@est.est', crypt('est123', gen_salt('bf'))
     );
 
+---------------------------------------------------------------
+
+
+
 -- Inserções por Miguel Luna ----------------------------------
 -- Utilizei 6 dígitos para id e 9 dígitos para numeroDeSerie de materialDidatico
 
@@ -44,3 +47,21 @@ INSERT INTO "MateriaisDidaticos"
     (566542, 'materialDidatico', 648465469);
 
 ---------------------------------------------------------------
+
+
+-- Inserções por Miguel Carvalho de Medeiros ----------------------------------
+
+INSERT INTO "Items" ("id", "type", "descricao", "categoria", "dataDeAquisicao", "estadoDeConservacao", "localizacao", "uriImagem")
+    VALUES
+    (8577803828, 'livro', 'Livro sobre modelagem de Bancos de Dados. 6ª edição', 'Bancos de Dados', TO_DATE('12/11/2023', 'DD/MM/YYYY'), 'bom', 'prateleira 1', 'https://media.istockphoto.com/id/466564401/pt/vetorial/modelo-de-livro-vertical-em-branco.jpg?s=1024x1024&w=is&k=20&c=ZKSJ4qganGkiieYJMx6ODiCmZUuXLmdOmWBn_qg6Byc='),
+    (8579360855, 'livro', 'Livro sobre sistemas de bancdos de dados', 'Bancos de Dados', TO_DATE('01/01/2001', 'DD/MM/YYYY'), 'ruim', 'prateleira 4', 'https://media.istockphoto.com/id/495477978/pt/foto/livro-aberto.jpg?s=2048x2048&w=is&k=20&c=dnNS2jDfWlODq7CtV_IyAdZCaeLKEb0P1mpMFzfkwPM='),
+    (1234567890, 'livro', 'Um Outro Livro Qualquer', 'Outros', TO_DATE('02/02/2002', 'DD/MM/YYYY'), 'ótimo', 'prateleira 1', '');
+
+INSERT INTO "Livros" ("ISBN", "title", "author")
+    VALUES
+    (8577803828, 'Projeto de Banco de Dados', 'CARLOS ALBERTO HEUSER'),
+    (8579360855, 'Sistemas de Banco de Dados', 'ELMASRI, R. E. e NAVATHE, S.'),
+    (1234567890, 'Livro Qualquer', 'QUALQUER, PESSOA');
+
+---------------------------------------------------------------
+
