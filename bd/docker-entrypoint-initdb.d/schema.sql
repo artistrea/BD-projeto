@@ -60,7 +60,7 @@ CREATE TABLE "Emprestimos" (
   "dataDeDevolucaoPrevista" date NOT NULL DEFAULT (CURRENT_DATE + 7),
   "status" "emprestimoStatus" DEFAULT 'emAndamento',
   "userId" int,
-  "itemId" int,
+  "itemId" bigint,
   "itemType" "itemType",
   PRIMARY KEY ("itemId", "itemType", "userId", "dataDeEmprestimo", "status")
 );
