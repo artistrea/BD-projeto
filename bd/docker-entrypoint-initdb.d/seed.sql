@@ -13,16 +13,9 @@ INSERT INTO "Usuarios"
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXC4DqeNvqfIUqoryd6cU3oEZ_-0qaoY9l0w&usqp=CAU',
         'administrador', 'Seu', 'Siriguejo', 'adm@adm.adm',
         crypt('adm123', gen_salt('bf'))
-    );
-
-
-INSERT INTO "Usuarios"
+    ),
     (
-        "funcao", "nome", "sobrenome", "login",
-        "hashSenha"
-    )
-    VALUES
-    (
+        '',
         'chefe', 'Grande', 'Chefinho', 'chf@chf.chf',
         crypt('chf123', gen_salt('bf'))
     );
