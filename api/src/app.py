@@ -17,25 +17,42 @@ def me_api(itemType, id):
 
 @app.route("/items/create", methods=[ "POST" ])
 def route_createItem():
+    item = request.json['item']
     item = {
-        'id' : request.json['id'],
-        'type' : request.json['type'],
-        'descricao' : request.json['descricao'],
-        'categoria' : request.json['categoria'],
-        'dataDeAquisicao' : request.json['dataDeAquisicao'],
-        'estadoDeConservacao' : request.json['estadoDeConservacao'],
-        'localizacao' : request.json['localizacao'],
-        'uriImagem' : request.json['uriImagem']
+        'id' : item['id'],
+        'type' : item['type'],
+        'descricao' : item['descricao'],
+        'categoria' : item['categoria'],
+        'dataDeAquisicao' : item['dataDeAquisicao'],
+        'estadoDeConservacao' : item['estadoDeConservacao'],
+        'localizacao' : item['localizacao'],
+        'uriImagem' : item['uriImagem']
     }
-    return items.createItem(item)
+    if item['type'] == 'livro':
+        book = request.json['livro']
+        book = {
+            "ISBN" : book['ISBN'],
+            "title" : book['title'],
+            "author" : book['author'],
+        }
+        return items.createItem(item, book)
+    elif item['type'] == 'materialDidatico':
+        material = request.json['materialDidatico']
+        material = {
+            "id" : material['id'],
+            "numeroDeSerie" : material['numeroDeSerie']
+        }
+        return items.createItem(item, material)
 
 @app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
 def route_updateItem(itemType, id):
     item = items.getItem(id, itemType)
-    for key,value in request.get_json().items():
+    for key,value in request.json['item'].items():
         item[key] = value
-
-    return items.updateItem(item)
+    bookOrMaterial = item
+    for key,value in request.json[itemType].items():
+        bookOrMaterial[key] = value
+    return items.updateItem(item, bookOrMaterial)
 
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
 def route_deleteItem(itemType, id):

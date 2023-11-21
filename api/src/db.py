@@ -25,8 +25,13 @@ def executeQuery(query: str, params=()) -> list:
 
 def executeCommand(command: str, params=()) -> bool:
     cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-    cur.execute(command, params)
-    db.commit()
-    cur.close()
+    try:
+        cur.execute(command, params)
+        db.commit()
+        cur.close()
+    except:
+        db.rollback()
+        cur.close()
+        raise psycopg2.DatabaseError
 
 
