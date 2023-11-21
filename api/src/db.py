@@ -34,18 +34,3 @@ def executeCommand(command: str, params=()) -> bool:
         cur.close()
         raise psycopg2.DatabaseError
 
-def executeMutation(mutation: str, params=()) -> list:
-    '''Create cursor and run mutation without results.
-
-    Keyword arguments:
-    mutation -- codigo SQL. Se tiver parametro, use "parametro"=%s 
-    params -- se precisar passar parametros, os passe aqui em ordem. Serão usados para substituir os %s
-
-    '''
-    cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
-
-    cur.execute(mutation, params)
-
-    db.commit()
-
-    cur.close()
