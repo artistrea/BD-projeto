@@ -28,3 +28,17 @@ def route_createItem():
         'uriImagem' : request.json['uriImagem']
     }
     return items.createItem(item)
+
+@app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
+def route_updateItem(itemType, id):
+    item = items.getItem(id, itemType)
+    for key,value in request.get_json().items():
+        item[key] = value
+
+    return items.updateItem(item)
+
+@app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
+def route_deleteItem(itemType, id):
+    item = items.getItem(id, itemType)
+    items.deleteItem(id, itemType)
+    return item
