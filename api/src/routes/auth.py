@@ -43,11 +43,11 @@ def logout():
     return True
 
 
-PERMISSIONS_HIERARCHY = [
-    'estudante',
-    'chefe',
-    'administrador',
-]
+PERMISSIONS_HIERARCHY = {
+    'estudante': 0,
+    'chefe': 1,
+    'administrador': 2,
+}
 
 def get_current_user():
     user = dangerously_get_current_user()
