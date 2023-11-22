@@ -66,21 +66,21 @@ def dangerously_get_current_user():
 
     return response_arr[0]
 
-def authorize_user():
-    user = get_current_user()
+def authorize_user(user=None):
+    if user is None: user = get_current_user()
 
     return not (user is None)
 
-def authorize_chief():
-    user = get_current_user()
+def authorize_chief(user=None):
+    if user is None: user = get_current_user()
 
     if user is None:
         return False
 
     return PERMISSIONS_HIERARCHY[user["funcao"]] >= PERMISSIONS_HIERARCHY["chefe"]
 
-def authorize_admin():
-    user = get_current_user()
+def authorize_admin(user=None):
+    if user is None: user = get_current_user()
 
     if user is None:
         return False
