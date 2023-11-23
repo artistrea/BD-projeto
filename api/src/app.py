@@ -57,13 +57,20 @@ def route_createItem():
 
 @app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
 def route_updateItem(itemType, id):
+    body = request.json
+    valid_body = validate_json(body, items.update_item_schema)
+    if not valid_body:
+        return { "message": "Wrong parameters" }, 400
+
     item = items.getItem(id, itemType)
-    for key,value in request.json['item'].items():
+    if not item:
+        return { "message": "Item not found" }, 404
+
+    for key,value in body.items():
         item[key] = value
     bookOrMaterial = item
-    for key,value in request.json[itemType].items():
-        bookOrMaterial[key] = value
-    return items.updateItem(item, bookOrMaterial)
+    items.updateItem(item, bookOrMaterial)
+    return items.getItem(id, itemType)
 
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
 def route_deleteItem(itemType, id):

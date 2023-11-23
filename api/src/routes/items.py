@@ -1,5 +1,23 @@
 import db
 
+update_item_schema = {
+    "type": "object",
+    "properties": {
+        'id' :                  {"not" : {}}, #  Proibindo ele de tentar atualizar o id
+        'type' :                {"not" : {}}, #  Proibindo ele de tentar atualizar o type
+        'ISBN' :                {"not" : {}}, #  Proibindo ele de tentar atualizar o ISBN, se for um livro
+        'descricao' :           { "type": "string" },
+        'categoria' :           { "type": "string" },
+        'dataDeAquisicao' :     { "type": "string" },
+        'estadoDeConservacao' : { "type": "string" },
+        'localizacao' :         { "type": "string" },
+        'uriImagem' :           { "type": "string" },
+        "title" :               { "type": "string" },
+        "author" :              { "type": "string" },
+        "numeroDeSerie":        { "type": "number" },
+    },
+}
+
 def getAllItems():
     books = db.executeQuery('SELECT * FROM "Items" INNER JOIN "Livros" ON "Livros"."ISBN" = "Items"."id" AND "Livros"."type" = "Items"."type"')
 
@@ -12,6 +30,10 @@ def getItem(id, itemType):
         items = db.executeQuery('SELECT * FROM "Items" INNER JOIN "Livros" ON "Items"."id"="Livros"."ISBN" WHERE "Items"."id"=%s AND "Items"."type"=%s', (id, itemType))
     elif itemType == 'materialDidatico':
         items = db.executeQuery('SELECT * FROM "Items" INNER JOIN "MateriaisDidaticos" ON "Items"."id"="MateriaisDidaticos"."id" WHERE "Items"."id"=%s AND "Items"."type"=%s', (id, itemType))
+    
+    if not items:
+        return None
+
     return items[0]
 
 def createItem(item: dict, bookOrmaterial: dict):
