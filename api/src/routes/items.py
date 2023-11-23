@@ -18,6 +18,66 @@ update_item_schema = {
     },
 }
 
+create_item_schema = {
+    "type": "object",
+    "properties": {
+        'item': {
+            "type": "object",
+            "properties": {
+                'id' :                  { "type": "number" },
+                'type' :                { "enum": ["livro", "materialDidatico"] },
+                'descricao' :           { "type": "string" },
+                'categoria' :           { "type": "string" },
+                'dataDeAquisicao' :     { "type": "string" },
+                'estadoDeConservacao' : { "type": "string" },
+                'localizacao' :         { "type": "string" },
+                'uriImagem' :           { "type": "string" }
+            },
+            "required": ["id", "type", "descricao", "categoria", "dataDeAquisicao", "estadoDeConservacao", "localizacao", "uriImagem"]
+        },
+        'livro': {
+            "type": "object",
+            "properties": {
+                "ISBN" :                { "type": "number" },
+                "title" :               { "type": "string" },
+                "author" :              { "type": "string" },
+            },
+            "required": ["ISBN", "title", "author"]
+        },
+        'materialDidatico': {
+            "type": "object",
+            "properties": {
+                "id" :                  { "type": "number" },
+                "numeroDeSerie":        { "type": "number" },
+            },
+            "required": ["id", "numeroDeSerie"]
+        }
+    },
+    "anyOf": [
+        {
+            "properties": {
+                "item": {
+                    "properties": {
+                        "type": {"const": "livro"}
+                    }
+                }
+            },
+            "required": ["livro"]
+        },
+        {
+            "properties": {
+                "item": {
+                    "properties": {
+                        "type": {"const": "materialDidatico"}
+                    }
+                }
+            },
+            "required": ["materialDidatico"]
+        }
+    ],
+    "required": ["item"],
+}
+
 def getAllItems():
     books = db.executeQuery('SELECT * FROM "Items" INNER JOIN "Livros" ON "Livros"."ISBN" = "Items"."id" AND "Livros"."type" = "Items"."type"')
 

@@ -24,36 +24,30 @@ def getAllItemsRoute():
 
 @app.route("/items/<itemType>/<id>", methods=[ "GET" ])
 def me_api(itemType, id):
-    return items.getItem(id, itemType)
+    item = items.getItem(id, itemType)
+    if item is None:
+        return { "message" : "Item not found" }, 404
+    return item
 
 @app.route("/items/create", methods=[ "POST" ])
 def route_createItem():
-    item = request.json['item']
-    item = {
-        'id' : item['id'],
-        'type' : item['type'],
-        'descricao' : item['descricao'],
-        'categoria' : item['categoria'],
-        'dataDeAquisicao' : item['dataDeAquisicao'],
-        'estadoDeConservacao' : item['estadoDeConservacao'],
-        'localizacao' : item['localizacao'],
-        'uriImagem' : item['uriImagem']
-    }
-    if item['type'] == 'livro':
-        book = request.json['livro']
-        book = {
-            "ISBN" : book['ISBN'],
-            "title" : book['title'],
-            "author" : book['author'],
-        }
-        return items.createItem(item, book)
-    elif item['type'] == 'materialDidatico':
-        material = request.json['materialDidatico']
-        material = {
-            "id" : material['id'],
-            "numeroDeSerie" : material['numeroDeSerie']
-        }
-        return items.createItem(item, material)
+    body = request.json
+    valid_body = validate_json(body, items.create_item_schema)
+    if not valid_body:
+        return { "message": "Wrong parameters" }, 400
+    item = body['item']
+    item_type = item['type']
+    bookOrMaterial = body[item_type]
+
+    bookOrMaterial_idName = "ISBN" if item_type == 'livro' else 'id'
+    if item["id"] != bookOrMaterial[bookOrMaterial_idName]:
+        return { "message": "Wrong parameters" }, 400
+    
+    try:
+        newItem = items.createItem(item, bookOrMaterial)
+        return newItem
+    except:
+        return { "message": "Could not create the item" }, 400
 
 @app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
 def route_updateItem(itemType, id):
@@ -63,7 +57,7 @@ def route_updateItem(itemType, id):
         return { "message": "Wrong parameters" }, 400
 
     item = items.getItem(id, itemType)
-    if not item:
+    if item is None:
         return { "message": "Item not found" }, 404
 
     for key,value in body.items():
@@ -75,6 +69,8 @@ def route_updateItem(itemType, id):
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
 def route_deleteItem(itemType, id):
     item = items.getItem(id, itemType)
+    if item is None:
+        return { "message": "Item not found" }, 404
     items.deleteItem(id, itemType)
     return item
 
