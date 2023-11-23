@@ -63,8 +63,7 @@ def route_updateItem(itemType, id):
     for key,value in body.items():
         item[key] = value
     bookOrMaterial = item
-    items.updateItem(item, bookOrMaterial)
-    return items.getItem(id, itemType)
+    return items.updateItem(item, bookOrMaterial)
 
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
 def route_deleteItem(itemType, id):

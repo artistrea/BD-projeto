@@ -110,14 +110,13 @@ def createItem(item: dict, bookOrmaterial: dict):
                           VALUES
                           (%(ISBN)s, %(title)s, %(author)s)
                           ''', bookOrmaterial)
-        return {'item':item, 'livro':bookOrmaterial}
     elif item['type'] == 'materialDidatico':
         db.executeCommand('''
                           INSERT INTO "MateriaisDidaticos" ("id", "numeroDeSerie")
                           VALUES
                           (%(id)s, %(numeroDeSerie)s)
                           ''', bookOrmaterial)
-        return {'item':item, 'materialDidatico':bookOrmaterial}
+    return getItem(item['id'], item['type'])
 
 def updateItem(item: dict, bookOrmaterial: dict):
     db.executeCommand('''UPDATE "Items"
@@ -136,14 +135,13 @@ def updateItem(item: dict, bookOrmaterial: dict):
                                     "author"=%(author)s
                                 WHERE "ISBN"=%(ISBN)s AND "type"=%(type)s
                           ''', bookOrmaterial)
-        return {'item':item, 'livro':bookOrmaterial}
     elif item['type'] == 'materialDidatico':
         db.executeCommand('''UPDATE "MateriaisDidaticos"
                             SET
                                 "numeroDeSerie"=%(numeroDeSerie)s
                             WHERE "id"=%(id)s AND "type"=%(type)s
                           ''', bookOrmaterial)
-        return {'item':item, 'materialDidatico':bookOrmaterial}
+    return getItem(item['id'], item['type'])
 
 def deleteItem(id, itemType):
     db.executeCommand('DELETE FROM "Items" WHERE "id"=%s AND "type"=%s', (id, itemType))
