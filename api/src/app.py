@@ -76,7 +76,7 @@ def getUserRoute(id):
     if cur_user is None:
         return { "message": "Unauthorized" }, 401
     
-    if authorize_chief(cur_user):
+    if auth.authorize_chief(cur_user):
         usr = users.getUser(id)
         if usr is None:
             return { "message": "Not found" }, 404
@@ -125,7 +125,7 @@ def updateUserRoute(id):
 
     if cur_user is None: return { "message": "Unauthorized" }, 401
 
-    can_edit = auth.authorize_chief(cur_user) or cur_user["id"] == id
+    can_edit = auth.authorize_admin(cur_user) or str(cur_user["id"]) == id
 
     if not can_edit: return { "message": "Unauthorized" }, 401
 
@@ -179,7 +179,7 @@ def updateUserPasswordRoute(id):
 
         if user is None: return { "message": "Not Found" }, 404
 
-        users.updateUserPassword(id, body["senha"]["nova"])
+        return users.updateUserPassword(id, body["senha"]["nova"])
 
     session = auth.login(update_user_password_info["login"], update_user_password_info["senha"]["antiga"])
 

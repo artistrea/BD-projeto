@@ -65,7 +65,7 @@ def createUser(create_user_info):
 update_user_schema = {
     "type": "object",
     "properties": {
-        "id": { "type": "string" },
+        "id": { "not": {} },
         "uriImagem": { "type": "string"  },
         "nome": { "type": "string" },
         "sobrenome": { "type": "string" },
@@ -92,12 +92,12 @@ def updateUser(update_user_info):
 update_user_function_schema = {
     "type": "object",
     "properties": {
-        "id": { "type": "string" },
+        "id": { "not": {} },
         "funcao": {
             "enum": ["administrador", "chefe", "estudante"],
         },
     },
-    "required": ["id", "funcao"],
+    "required": ["funcao"],
     "additionalProperties": False
 }
 
@@ -117,7 +117,7 @@ def updateUserFunction(update_user_function_info):
 update_user_password_schema = {
     "type": "object",
     "properties": {
-        "id": { "type": "string" },
+        "id": { "not": {} },
         "senha": {
             "type": "object",
             "properties": {
@@ -127,14 +127,14 @@ update_user_password_schema = {
             "required": ["nova"]
         },
     },
-    "required": ["id", "senha"],
+    "required": ["senha"],
     "additionalProperties": False
 }
 
 def updateUserPassword(id, newPassword):
     newUser =  auth.secure_format_user(db.executeQuery('''
         UPDATE "Usuarios"
-        SET "senha"=crypt(%s, gen_salt('bf'))
+        SET "hashSenha"=crypt(%s, gen_salt('bf'))
         WHERE "id"=%s
         RETURNING "Usuarios".*;
         ''', (newPassword, id)

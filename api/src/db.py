@@ -14,14 +14,20 @@ def executeQuery(query: str, params=()) -> list:
     '''
     cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
 
-    cur.execute(query, params)
-    results = cur.fetchall()
+    try:
+        cur.execute(query, params)
+        results = cur.fetchall()
 
-    db.commit()
+        db.commit()
+        cur.close()
 
-    cur.close()
+        return results
+    except psycopg2.Error as e:
+        db.rollback()
+        cur.close()
+        raise e
 
-    return results
+
 
 def executeMutation(mutation: str, params=()) -> list:
     '''Create cursor and run mutation without results.
