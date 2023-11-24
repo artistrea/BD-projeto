@@ -1,6 +1,7 @@
 from flask import Flask
 import routes.items as items
 import routes.auth as auth
+import routes.users as users
 import sys
 from flask import request
 import jsonschema
@@ -56,4 +57,138 @@ def get_current_user():
         return { "message": "Unauthorized" }, 401
 
     return user
+
+@app.route("/users", methods=[ "GET" ])
+def getAllUsersRoute():
+    is_at_least_chief = auth.authorize_chief()
+
+    if not is_at_least_chief:
+        return { "message": "Unauthorized" }, 401
+
+    data = users.getAllUsers()
+    return data
+
+
+@app.route("/user/<id>", methods=[ "GET" ])
+def getUserRoute(id):
+    cur_user = auth.get_current_user()
+
+    if cur_user is None:
+        return { "message": "Unauthorized" }, 401
+    
+    if authorize_chief(cur_user):
+        usr = users.getUser(id)
+        if usr is None:
+            return { "message": "Not found" }, 404
+        
+        return usr
+
+    if cur_user["id"] == id:
+        return cur_user
+
+    return { "message": "Unauthorized" }, 401
+
+@app.route("/user", methods=[ "POST" ])
+def createUserRoute():
+    body = request.json
+
+    if not auth.authorize_admin():
+        return { "message": "Unauthorized" }, 401
+
+    if not validate_json(body, users.create_user_schema):
+        return { "message": "Invalid parameters" }, 400
+
+    newUser = users.createUser(body)
+
+    return newUser
+
+@app.route("/user/<id>", methods=[ "DELETE" ])
+def deleteUserRoute(id):
+    cur_user = auth.get_current_user()
+
+    can_delete = cur_user is not None and (auth.authorize_admin(cur_user) or id == cur_user["id"])
+
+    if not can_delete:
+        return { "message": "Unauthorized" }, 401
+
+    deletedUser = users.deleteUser(id)
+
+    if deletedUser is None: 
+        return { "message": "Not Found" }, 404
+
+    return deletedUser
+
+
+@app.route("/user/<id>", methods=[ "PUT" ])
+def updateUserRoute(id):
+    cur_user = auth.get_current_user()
+
+    if cur_user is None: return { "message": "Unauthorized" }, 401
+
+    can_edit = auth.authorize_chief(cur_user) or cur_user["id"] == id
+
+    if not can_edit: return { "message": "Unauthorized" }, 401
+
+    body = request.json
+
+    if not validate_json(body, users.update_user_schema):
+        return { "message": "Invalid parameters" }, 400
+    
+    user = users.getUser(id)
+
+    if user is None: return { "message": "Not Found" }, 404
+
+    newUser = users.updateUser({ **user, **body })
+
+    return newUser
+
+@app.route("/user/<id>/function", methods=[ "PUT" ])
+def updateUserFunctionRoute(id):
+    cur_user = auth.get_current_user()
+
+    can_edit = auth.authorize_admin(cur_user)
+
+    if not can_edit: return { "message": "Unauthorized" }, 401
+
+    body = request.json
+
+    if not validate_json(body, users.update_user_function_schema):
+        return { "message": "Invalid parameters" }, 400
+
+    user = users.getUser(id)
+
+    if user is None: return { "message": "Not Found" }, 404
+
+
+    newUser = users.updateUserFunction({ **user, **body })
+
+    return newUser
+
+
+@app.route("/user/<id>/password", methods=[ "PUT" ])
+def updateUserPasswordRoute(id):
+    body = request.json
+
+    cur_user = auth.get_current_user()
+
+    if auth.authorize_admin(cur_user):
+        if not validate_json(body, users.update_user_password_schema):
+            return { "message": "Invalid parameters" }, 400
+
+        user = users.getUser(id)
+
+        if user is None: return { "message": "Not Found" }, 404
+
+        users.updateUserPassword(id, body["senha"]["nova"])
+
+    session = auth.login(update_user_password_info["login"], update_user_password_info["senha"]["antiga"])
+
+    can_edit = session is not None and session["user"]["id"] == cur_user["id"]
+
+    if not can_edit: return { "message": "Unauthorized" }, 401
+
+    newUser = users.updateUserPassword(id, body["senha"]["nova"])
+
+    return newUser
+
 
