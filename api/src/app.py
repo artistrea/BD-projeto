@@ -31,6 +31,8 @@ def me_api(itemType, id):
 
 @app.route("/items/create", methods=[ "POST" ])
 def route_createItem():
+    if not auth.authorize_chief():
+        return { "message" : "Unauthorized" }, 401
     body = request.json
     valid_body = validate_json(body, items.create_item_schema)
     if not valid_body:
@@ -51,6 +53,8 @@ def route_createItem():
 
 @app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
 def route_updateItem(itemType, id):
+    if not auth.authorize_chief():
+        return { "message" : "Unauthorized" }, 401
     body = request.json
     valid_body = validate_json(body, items.update_item_schema)
     if not valid_body:
@@ -67,6 +71,8 @@ def route_updateItem(itemType, id):
 
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
 def route_deleteItem(itemType, id):
+    if not auth.authorize_chief():
+        return { "message" : "Unauthorized" }, 401
     item = items.getItem(id, itemType)
     if item is None:
         return { "message": "Item not found" }, 404
