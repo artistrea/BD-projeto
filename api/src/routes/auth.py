@@ -38,7 +38,7 @@ def logout():
     if user is None:
         return False
 
-    db.executeMutation('UPDATE "Usuarios" SET "authToken" = uuid_generate_v4() WHERE "Usuarios"."authToken" = %s AND "Usuarios"."login" = %s;', (user["authToken"], user["login"]))
+    db.executeCommand('UPDATE "Usuarios" SET "authToken" = uuid_generate_v4() WHERE "Usuarios"."authToken" = %s AND "Usuarios"."login" = %s;', (user["authToken"], user["login"]))
 
     return True
 
