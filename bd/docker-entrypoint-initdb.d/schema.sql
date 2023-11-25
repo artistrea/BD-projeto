@@ -65,12 +65,12 @@ CREATE TABLE "Emprestimos" (
   PRIMARY KEY ("itemId", "itemType", "userId", "dataDeEmprestimo", "status")
 );
 
-ALTER TABLE "Livros" ADD FOREIGN KEY ("ISBN", "type") REFERENCES "Items" ("id", "type");
+ALTER TABLE "Livros" ADD FOREIGN KEY ("ISBN", "type") REFERENCES "Items" ("id", "type") ON DELETE CASCADE;
 
-ALTER TABLE "MateriaisDidaticos" ADD FOREIGN KEY ("id", "type") REFERENCES "Items" ("id", "type");
+ALTER TABLE "MateriaisDidaticos" ADD FOREIGN KEY ("id", "type") REFERENCES "Items" ("id", "type") ON DELETE CASCADE;
 
-ALTER TABLE "Emprestimos" ADD FOREIGN KEY ("userId") REFERENCES "Usuarios" ("id");
+ALTER TABLE "Emprestimos" ADD FOREIGN KEY ("userId") REFERENCES "Usuarios" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "Emprestimos" ADD FOREIGN KEY ("itemId", "itemType") REFERENCES "Items" ("id", "type");
+ALTER TABLE "Emprestimos" ADD FOREIGN KEY ("itemId", "itemType") REFERENCES "Items" ("id", "type") ON DELETE CASCADE;
 
 
