@@ -58,6 +58,8 @@ def get_current_user():
 
 def dangerously_get_current_user():
     authentication_token = request.headers.get("X-Auth-Token")
+    if authentication_token is None or len(authentication_token) != 36:
+        return None
     login = request.headers.get("X-Auth-Login")
     response_arr = db.executeQuery('SELECT * FROM "Usuarios" WHERE "Usuarios"."authToken" = %s AND "Usuarios"."login" = %s;', (authentication_token, login))
 
