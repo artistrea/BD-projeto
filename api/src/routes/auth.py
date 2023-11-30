@@ -20,6 +20,16 @@ def secure_format_user(unformatted_user):
         "uriImagem": unformatted_user["uriImagem"],
     }
 
+def secure_format_loan(unformatted_loan):
+    return {
+        "dataDeDevolucaoPrevista": unformatted_loan["dataDeDevolucaoPrevista"],
+        "dataDeEmprestimo": unformatted_loan["dataDeEmprestimo"],
+        "itemId": unformatted_loan["itemId"],
+        "itemType": unformatted_loan["itemType"],
+        "status": unformatted_loan["status"],
+        "userId": unformatted_loan["userId"],
+    }
+
 def login(login, password):
     response_arr = db.executeQuery('SELECT * FROM "Usuarios" WHERE "Usuarios"."login" = %s AND "Usuarios"."hashSenha" = crypt(%s, "Usuarios"."hashSenha");', (login, password))
 

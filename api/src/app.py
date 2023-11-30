@@ -2,9 +2,11 @@ from flask import Flask, request
 import routes.items as items
 import routes.auth as auth
 import routes.users as users
+import routes.loans as loans
 import sys
 from flask import request
 import jsonschema
+from datetime import datetime
 
 # setting path
 sys.path.append('db')
@@ -243,3 +245,91 @@ def updateUserPasswordRoute(id):
     newUser = users.updateUserPassword(id, body["senha"]["nova"])
 
     return newUser
+
+
+@app.route("/loan", methods=[ "GET" ])
+def getAllLoansRoute():
+
+    return loans.getAllLoans()
+
+
+@app.route("/loan/<id>", methods=[ "GET" ])
+def getLoanRoute(id):
+    cur_user = auth.get_current_user()
+
+    if cur_user is None:
+        return { "message": "Unauthorized" }, 401
+    
+    if auth.authorize_chief(cur_user):
+        lns = loans.getLoanByUserId(id)
+        if lns is None:
+            return { "message": "Not found" }, 404
+
+        return lns
+
+    return { "message": "Unauthorized" }, 401
+
+
+@app.route("/loan", methods=[ "POST" ])
+def createLoanRoute():
+    body = request.json
+
+    # if not auth.authorize_admin():
+    #     return { "message": "Unauthorized" }, 401
+
+    if not validate_json(body, loans.create_loan_schema):
+        return { "message": "Invalid parameters" }, 400
+
+    new_loan = loans.createLoan(body)
+
+    return new_loan
+
+
+@app.route("/loan/<user_id>/<item_id>", methods=[ "DELETE" ])
+def deleteLoanRoute(user_id, item_id):
+    body = request.json
+
+    if not validate_json(body, loans.delete_loan_schema):
+        return { "message": "Invalid parameters" }, 400
+    
+    deleted_loan = loans.deleteLoan(user_id, body["dataDeEmprestimo"], item_id, body["itemType"])
+
+    return deleted_loan
+
+
+@app.route("/loan/<user_id>", methods=[ "PUT" ])
+def updateLoanRoute(user_id):
+    cur_user = auth.get_current_user()
+
+    if cur_user is None: return { "message": "Unauthorized" }, 401
+
+    can_edit = auth.authorize_admin(cur_user) or str(cur_user["id"]) == user_id
+
+    if not can_edit: return { "message": "Unauthorized" }, 401
+
+    body = request.json
+    loan_group = loans.getLoanByUserId(user_id)
+
+    if loan_group is None: return { "message": "Not Found" }, 404
+
+    for loan in loan_group:
+        data_obj = datetime.strptime(str(loan["dataDeEmprestimo"]), "%Y-%m-%d")
+        formated_date = data_obj.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        
+        if body["dataDeEmprestimo"] == formated_date:
+
+            loan_date = body["dataDeEmprestimo"]
+            body.pop("dataDeEmprestimo")
+            break
+
+
+    if not validate_json(body, loans.update_loan_schema):
+        return { "message": "Invalid parameters" }, 400
+    
+    body["userId"] = user_id
+    body["dataDeEmprestimo"] = loan_date
+
+
+    updated_loan = loans.updateLoan(body)
+
+    return updated_loan
