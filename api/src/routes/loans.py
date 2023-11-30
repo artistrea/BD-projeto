@@ -47,7 +47,7 @@ def createLoan(create_loan_info):
 update_loan_schema = {
     "type": "object",
     "properties": {
-        "dataDeEmprestimo":         { "not": {} },
+        "dataDeEmprestimo":         { "type": "string", "format": "date-time" },
         "userId":                   { "not": {} },
         "dataDeDevolucaoPrevista":  { "type": "string", "format": "date-time" },
         "status":                   { "enum": ["emAndamento", "concluido", "pedido"] },

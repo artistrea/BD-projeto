@@ -14,7 +14,8 @@ CREATE TYPE "funcaoDoUsuario" AS ENUM (
 
 CREATE TYPE "emprestimoStatus" AS ENUM (
   'emAndamento',
-  'concluido'
+  'concluido',
+  'pedido'
 );
 
 CREATE TABLE "Items" (
