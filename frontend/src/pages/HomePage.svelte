@@ -12,9 +12,12 @@
     // };
     
 	// onMount(fetchData());
+	console.log("home")
 </script>
 <div class="container">
-EPA
+<h1>
+	EPA
+</h1>
 
 </div>
 

@@ -1,37 +1,42 @@
 <script lang="ts">
-  import router from "page"
   import HomePage from './pages/HomePage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import type { ComponentType } from "svelte";
+  import { user } from "./stores/user"
+  import router, {  createRoute } from "./router/index"
 
   let page: ComponentType;
   let params: any;
-  let user = null;
 
   // only unauth route:
-  router('/login', () => page = LoginPage);
+  createRoute('/login', () => {
+    if ($user) router.redirect("/")
+    else page = LoginPage
+  });
+
 
   function requireAuthLoggedIn(authLevel: "administrador" | "chefe" | "estudante") {
-    if (!user) router.redirect("/login");
+    if (!$user) {
+      router.redirect("/login");
+      return false;
+    };
 
-    if (user.funcao === "administrador") return;
-    if (authLevel !== "administrador" && user.funcao === "chefe") return;
-    if (authLevel === "estudante" && user.funcao === "estudante") return;
+    if ($user.funcao === "administrador") return true;
+    if (authLevel !== "administrador" && $user.funcao === "chefe") return true;
+    if (authLevel === "estudante" && $user.funcao === "estudante") return true;
     
     router.redirect("/login");
+    return false;
   }
 
-  function declareRoute(path: string, component: ComponentType, authLevel: "administrador" | "chefe" | "estudante" = "estudante") {
-    router(path, () => {
-      requireAuthLoggedIn(authLevel);
-      page = component;
-    })
-  }
+  createRoute("/", () => page = HomePage, {
+    middlewares: [
+      () => requireAuthLoggedIn("estudante")
+    ]
+  });
 
-  declareRoute("/", HomePage);
-
-  router.start();
+  router.start()
 </script>
 
 {#if page === LoginPage}

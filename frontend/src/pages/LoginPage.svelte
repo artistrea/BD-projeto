@@ -1,5 +1,5 @@
 <script >
-	import {login} from "../stores/user"
+	import { login } from "../stores/user"
 	import router from "page"
 
 	let handle;
