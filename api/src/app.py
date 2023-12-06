@@ -7,11 +7,14 @@ import sys
 from flask import request
 import jsonschema
 from datetime import datetime
+from flask_cors import CORS, cross_origin
 
 # setting path
 sys.path.append('db')
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def validate_json(json_to_validate, schema):
     try:
@@ -22,10 +25,12 @@ def validate_json(json_to_validate, schema):
 
 
 @app.route("/items", methods=[ "GET" ])
+@cross_origin()
 def getAllItemsRoute():
     return items.getAllItems()
 
 @app.route("/items/<itemType>/<id>", methods=[ "GET" ])
+@cross_origin()
 def me_api(itemType, id):
     item = items.getItem(id, itemType)
     if item is None:
@@ -33,6 +38,7 @@ def me_api(itemType, id):
     return item
 
 @app.route("/items/create", methods=[ "POST" ])
+@cross_origin()
 def route_createItem():
     if not auth.authorize_chief():
         return { "message" : "Unauthorized" }, 401
@@ -55,6 +61,7 @@ def route_createItem():
         return { "message": "Could not create the item" }, 400
 
 @app.route("/items/update/<itemType>/<id>", methods=[ "PATCH" ])
+@cross_origin()
 def route_updateItem(itemType, id):
     if not auth.authorize_chief():
         return { "message" : "Unauthorized" }, 401
@@ -73,6 +80,7 @@ def route_updateItem(itemType, id):
     return items.updateItem(item, bookOrMaterial)
 
 @app.route("/items/delete/<itemType>/<id>", methods=[ "DELETE" ])
+@cross_origin()
 def route_deleteItem(itemType, id):
     if not auth.authorize_chief():
         return { "message" : "Unauthorized" }, 401
@@ -83,6 +91,7 @@ def route_deleteItem(itemType, id):
     return item
 
 @app.route("/auth/login", methods=["POST"])
+@cross_origin()
 def login():
     body = request.json
     valid_body = validate_json(body, auth.login_schema)
@@ -98,6 +107,7 @@ def login():
     return session
 
 @app.route("/auth/logout_em_todos_aparelhos", methods=[ "POST" ])
+@cross_origin()
 def logout_all_devices():
     logged_out = auth.logout()
     if not logged_out:
@@ -105,6 +115,7 @@ def logout_all_devices():
     return { "message": "Deslogado em todos os aparelhos com sucesso!" }
 
 @app.route("/user/atual", methods=[ "POST" ])
+@cross_origin()
 def get_current_user():
     user = auth.get_current_user()
 
@@ -114,6 +125,7 @@ def get_current_user():
     return user
 
 @app.route("/users", methods=[ "GET" ])
+@cross_origin()
 def getAllUsersRoute():
     is_at_least_chief = auth.authorize_chief()
 
@@ -125,6 +137,7 @@ def getAllUsersRoute():
 
 
 @app.route("/user/<id>", methods=[ "GET" ])
+@cross_origin()
 def getUserRoute(id):
     cur_user = auth.get_current_user()
 
@@ -144,6 +157,7 @@ def getUserRoute(id):
     return { "message": "Unauthorized" }, 401
 
 @app.route("/user", methods=[ "POST" ])
+@cross_origin()
 def createUserRoute():
     body = request.json
 
@@ -158,6 +172,7 @@ def createUserRoute():
     return newUser
 
 @app.route("/user/<id>", methods=[ "DELETE" ])
+@cross_origin()
 def deleteUserRoute(id):
     cur_user = auth.get_current_user()
 
@@ -175,6 +190,7 @@ def deleteUserRoute(id):
 
 
 @app.route("/user/<id>", methods=[ "PUT" ])
+@cross_origin()
 def updateUserRoute(id):
     cur_user = auth.get_current_user()
 
@@ -198,6 +214,7 @@ def updateUserRoute(id):
     return newUser
 
 @app.route("/user/<id>/function", methods=[ "PUT" ])
+@cross_origin()
 def updateUserFunctionRoute(id):
     cur_user = auth.get_current_user()
 
@@ -221,6 +238,7 @@ def updateUserFunctionRoute(id):
 
 
 @app.route("/user/<id>/password", methods=[ "PUT" ])
+@cross_origin()
 def updateUserPasswordRoute(id):
     body = request.json
 
@@ -248,12 +266,14 @@ def updateUserPasswordRoute(id):
 
 
 @app.route("/loan", methods=[ "GET" ])
+@cross_origin()
 def getAllLoansRoute():
 
     return loans.getAllLoans()
 
 
 @app.route("/loan/<id>", methods=[ "GET" ])
+@cross_origin()
 def getLoanRoute(id):
     cur_user = auth.get_current_user()
 
@@ -271,6 +291,7 @@ def getLoanRoute(id):
 
 
 @app.route("/loan", methods=[ "POST" ])
+@cross_origin()
 def createLoanRoute():
     body = request.json
 
@@ -286,6 +307,7 @@ def createLoanRoute():
 
 
 @app.route("/loan/<user_id>/<item_id>", methods=[ "DELETE" ])
+@cross_origin()
 def deleteLoanRoute(user_id, item_id):
     body = request.json
 
@@ -298,6 +320,7 @@ def deleteLoanRoute(user_id, item_id):
 
 
 @app.route("/loan/<user_id>", methods=[ "PUT" ])
+@cross_origin()
 def updateLoanRoute(user_id):
     cur_user = auth.get_current_user()
 
