@@ -2,6 +2,7 @@
   import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
+  import ItemPage from './pages/ItemPage.svelte';
   import type { ComponentType } from "svelte";
   import { user } from "./stores/user"
   import router, {  createRoute } from "./router/index"
@@ -35,6 +36,12 @@
       () => requireAuthLoggedIn("estudante")
     ]
   });
+
+  createRoute("/item/:id/:type", (ctx) => {page = ItemPage; params=ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("estudante")
+    ],
+  })
 
   router.start()
 </script>
