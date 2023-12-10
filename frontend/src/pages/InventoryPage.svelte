@@ -39,7 +39,7 @@
 		</p>
 
     <div class="flex flex-col mt-2">
-			<input class="bg-transparent border-2 border-secondary rounded-md px-4 py-2" placeholder="Pesquisa" type="text" id="login" bind:value={query} on:input={fetchData}>
+			<input class="bg-transparent border-2 border-secondary rounded-md px-4 py-2" placeholder="Pesquisa, por Categoria, Título, Autor ou Descrição" type="text" id="login" bind:value={query} on:input={fetchData}>
 		</div>
 
 		<main class="mt-2">
