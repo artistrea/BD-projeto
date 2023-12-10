@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^1.6.2",
     "js-cookie": "^3.0.5",
+    "lucide-svelte": "^0.294.0",
     "page": "^1.11.6"
   }
 }

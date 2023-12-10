@@ -1,5 +1,5 @@
 <script lang="ts">
-  import HomePage from './pages/HomePage.svelte'
+  import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import type { ComponentType } from "svelte";
@@ -30,7 +30,7 @@
     return false;
   }
 
-  createRoute("/", () => page = HomePage, {
+  createRoute("/inventario", () => page = HomePage, {
     middlewares: [
       () => requireAuthLoggedIn("estudante")
     ]
