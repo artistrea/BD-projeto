@@ -7,15 +7,26 @@
 	// // const dataUrl = `https://newsapi.org/v2/everything?q=javascript&sortBy=publishedAt&apiKey=${apiKEY}`;
   let items = [];
 	let selectedTypes = [];
+  let query = ''
+
 	function fetchData() {
-		api.get("/items").then((res) => {
-			items = res.data;
-		}).catch((er) => alert(er.message))
+    if (query == '') {
+      api.get("/items").then((res) => {
+        items = res.data;
+      }).catch((er) => alert(er.message))
+    } else {
+      api.get(`/items/search/${query}`).then((res) => {
+        items = res.data;
+      }).catch((er) => alert(er.message))
+    }
 
 		return () => {};
     };
     
 	onMount(fetchData());
+  
+  $: fetchData
+
 </script>
 <div class="pl-20 flex justify-between relative">
 	<div class="py-8 mx-auto">
@@ -26,6 +37,10 @@
 			Estes são os itens que você pode pedir para pegar emprestado.
 			É necessário um admin ou chefe de laboratório para consumar o empréstimo.
 		</p>
+
+    <div class="flex flex-col mt-2">
+			<input class="bg-transparent border-2 border-secondary rounded-md px-4 py-2" placeholder="Pesquisa" type="text" id="login" bind:value={query} on:input={fetchData}>
+		</div>
 
 		<main class="mt-2">
 			<ul class="flex flex-col gap-4 p-8">

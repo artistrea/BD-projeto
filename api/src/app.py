@@ -90,6 +90,11 @@ def route_deleteItem(itemType, id):
     items.deleteItem(id, itemType)
     return item
 
+@app.route("/items/search/<query>", methods=[ "GET" ])
+@cross_origin()
+def route_searchItems(query):
+    return items.searchItem(query)
+
 @app.route("/auth/login", methods=["POST"])
 @cross_origin()
 def login():
