@@ -101,11 +101,11 @@
 
         {#if item.type == "livro" || $user.funcao === "chefe" || $user.funcao === "administrador"}
         <div class="flex justify-evenly content-center items-center mt-5 w-full h-full ">
-            <button disabled={!available || askedForLoan} on:click={() => {createLoan("pedido")}} class="h-min bg-accent rounded-md text-background p-5 text-lg hover:bg-primary transition ease-in-out">
+            <button disabled={!available || askedForLoan} on:click={() => {createLoan("pedido")}} class="h-min bg-accent rounded-md text-background p-5 text-lg hover:bg-primary transition">
                 Solicitar Empréstimo
             </button>
             {#if $user.funcao === "chefe" || $user.funcao === "administrador"}
-                <button disabled={!available || askedForLoan} on:click={() => createLoan("emAndamento")} class="h-min bg-accent rounded-md text-background p-5 text-lg hover:bg-primary transition ease-in-out">
+                <button disabled={!available || askedForLoan} on:click={() => createLoan("emAndamento")} class="h-min bg-accent rounded-md text-background p-5 text-lg hover:bg-primary transition">
                     Cadastrar Empréstimo
                 </button>
             {/if}
@@ -113,7 +113,10 @@
         {/if}
     </section>
     <section class="flex flex-col h-full p-6 max-h-screen w-1/2">
-        <h1 class=" text-lg font-bold rounded-md bg-accent py-2 px-3 h-min w-fit text-background self-end mb-2">{item.categoria}</h1>
+        <div class="flex gap-2 h-min w-fit self-end">
+            <h1 class=" text-lg font-bold rounded-md bg-accent py-2 px-3 h-min w-fit text-background self-end mb-2">{item.categoria}</h1>
+            <a href={`/item/edit/${id}/${type}`} class=" text-lg font-bold rounded-md bg-secondary py-2 px-3 h-min w-fit text-background self-end mb-2 hover:bg-primary transition"> Editar </a>
+        </div>
         <div class="flex flex-col content-center items-center p-5 items-right bg-{(item.type === "livro")? "primary" : "text"} rounded-lg h-full max-h-full">
             {#if item.type === "livro"}
             <img src={item.uriImagem? item.uriImagem  : defaultBook} alt="Falha ao carregar Imagem" class="imagem object-contain h-full max-h-screen w-full"/>
