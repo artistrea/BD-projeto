@@ -90,6 +90,13 @@ def route_deleteItem(itemType, id):
     items.deleteItem(id, itemType)
     return item
 
+@app.route("/items/isAvailable/<itemType>/<id>", methods=[ "GET" ])
+@cross_origin()
+def route_item_isAvailabe(itemType, id):
+    if loans.getLoanByItemAndStatus(id, itemType, "emAndamento"):
+        return {'available' : False}
+    return {'available' : True}
+
 @app.route("/auth/login", methods=["POST"])
 @cross_origin()
 def login():
