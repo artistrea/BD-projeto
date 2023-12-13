@@ -8,6 +8,7 @@
   import { user } from "./stores/user"
   import router, {  createRoute } from "./router/index"
     import EditItemPage from './pages/editItemPage.svelte';
+    import UserLoansPage from './pages/userLoansPage.svelte';
 
   let page: ComponentType;
   let params: any;
@@ -54,6 +55,12 @@
   createRoute("/item/edit/:id/:type", (ctx) => {page = EditItemPage; params=ctx.params}, {
     middlewares: [
       () => requireAuthLoggedIn("chefe")
+    ]
+  })
+
+  createRoute("/meusEmprestimos", () => page = UserLoansPage, {
+    middlewares: [
+      () => requireAuthLoggedIn('estudante')
     ]
   })
 

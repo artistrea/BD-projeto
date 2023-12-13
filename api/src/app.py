@@ -287,7 +287,7 @@ def getLoanRoute(id):
     if cur_user is None:
         return { "message": "Unauthorized" }, 401
     
-    if auth.authorize_chief(cur_user):
+    if auth.authorize_chief(cur_user) or str(cur_user['id']) == id:
         lns = loans.getLoanByUserId(id)
         if lns is None:
             return { "message": "Not found" }, 404
