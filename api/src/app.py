@@ -90,6 +90,12 @@ def route_deleteItem(itemType, id):
     items.deleteItem(id, itemType)
     return item
 
+
+@app.route("/items/search/<query>", methods=[ "GET" ])
+@cross_origin()
+def route_searchItems(query):
+    return items.searchItem(query)
+
 @app.route("/items/isAvailable/<itemType>/<id>", methods=[ "GET" ])
 @cross_origin()
 def route_item_isAvailabe(itemType, id):

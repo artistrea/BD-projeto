@@ -146,3 +146,20 @@ def updateItem(item: dict, bookOrmaterial: dict):
 def deleteItem(id, itemType):
     db.executeCommand('DELETE FROM "Items" WHERE "id"=%s AND "type"=%s', (id, itemType))
     return {"id":id, "type":itemType}
+
+def searchItem(search):
+    books = db.executeQuery('''
+                            SELECT * FROM "Items" INNER JOIN "Livros" ON "Livros"."ISBN" = "Items"."id" AND "Livros"."type" = "Items"."type"
+                             WHERE  "descricao" LIKE %(search)s OR 
+                                    "categoria" LIKE %(search)s OR 
+                                    "title" LIKE %(search)s OR 
+                                    "author" LIKE %(search)s
+                            ''', {'search':f'%{search}%'}
+                            )
+    materials = db.executeQuery('''
+                               SELECT * FROM "Items" INNER JOIN "MateriaisDidaticos" ON "MateriaisDidaticos"."id" = "Items"."id" AND "MateriaisDidaticos"."type" = "Items"."type"
+                               WHERE "descricao" LIKE %(search)s OR 
+                                    "categoria" LIKE %(search)s
+                               ''', {'search':f'%{search}%'})
+    return [*books, *materials]
+        
