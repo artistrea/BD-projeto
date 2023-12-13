@@ -1,6 +1,21 @@
 <script>
+    import { user } from "../stores/user";
     export let page;
     export let params;
+
+    import { logout } from "../stores/user";
+  	import router from "page";
+
+    function logoutAccount() {
+		  logout().then(() => {
+        router.redirect("/login");
+        alert("Logout com sucesso!")
+      })
+      .catch(err => {
+        if (err.response.status === 401) alert("Nenhum usuário está logado!")
+        else alert("Ocorreu um erro inesperado no servidor!")
+      })
+	}
 </script>
 
 
@@ -13,7 +28,7 @@
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/inventario">Inventário</a>
     </li>
     <li>
-      <button class="block py-2 px-4 hover:bg-background transition-colors">Sair</button>
+      <button on:click={logoutAccount} class="block py-2 px-4 hover:bg-background transition-colors">Sair</button>
     </li>
   </ul>
 </nav>  
