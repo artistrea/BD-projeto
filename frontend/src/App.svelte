@@ -9,6 +9,7 @@
   import router, {  createRoute } from "./router/index"
     import EditItemPage from './pages/editItemPage.svelte';
     import UserLoansPage from './pages/userLoansPage.svelte';
+    import ManageLoanPage from './pages/manageLoanPage.svelte';
 
   let page: ComponentType;
   let params: any;
@@ -61,6 +62,12 @@
   createRoute("/meusEmprestimos", () => page = UserLoansPage, {
     middlewares: [
       () => requireAuthLoggedIn('estudante')
+    ]
+  })
+
+  createRoute("/gerenciarEmprestimos", () => page = ManageLoanPage, {
+    middlewares: [
+      () => requireAuthLoggedIn('chefe')
     ]
   })
 
