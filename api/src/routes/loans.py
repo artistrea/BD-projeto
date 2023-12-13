@@ -16,6 +16,13 @@ def getLoanByUserId(user_id):
     
     return loans
 
+def getLoanByItemAndStatus(item_id, item_type, status):
+    loans = db.executeQuery('SELECT * FROM "Emprestimos" WHERE "itemId"=%s AND "itemType"=%s AND "status"=%s', (item_id,item_type, status))
+
+    if len(loans) == 0:
+        return None
+    
+    return loans
 
 
 create_loan_schema = {

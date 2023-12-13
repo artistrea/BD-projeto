@@ -47,35 +47,39 @@
 				{#each items.filter((item) => selectedTypes.length === 0 || selectedTypes.some(t => t === item.type)) as item (item.id ?? item.ISBN)}
 					{#if item.type === "livro"}
 						<li class="bg-primary text-background text-opacity-90 rounded relative">
-              <BookOpenText class="absolute top-4 -left-8 text-primary" />
-							<div class="flex justify-between">
-                <h2 class="pt-4 pb-2 pl-4">
-									<span class="text-xl">{item.title}</span>
-									<br>
-									<span class="opacity-70 text-sm">
-										{item.author}
-									</span>
-								</h2>
-								<span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
-							</div>
-              <p class="w-[40ch] leading-7 mb-4 ml-6 overflow-ellipsis overflow-hidden line-clamp-3">
-                {item.descricao}
-              </p>
+              <a href={`/item/${item.id}/${item.type}`}>
+                <BookOpenText class="absolute top-4 -left-8 text-primary" />
+                <div class="flex justify-between">
+                  <h2 class="pt-4 pb-2 pl-4">
+                    <span class="text-xl">{item.title}</span>
+                    <br>
+                    <span class="opacity-70 text-sm">
+                      {item.author}
+                    </span>
+                  </h2>
+                  <span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
+                </div>
+                <p class="w-[40ch] leading-7 mb-4 ml-6 overflow-ellipsis overflow-hidden line-clamp-3">
+                  {item.descricao}
+                </p>
+            </a>
 						</li>
 					{/if}
 					{#if item.type === "materialDidatico"}
 						<li class="bg-text text-background text-opacity-90 rounded relative">
-              <PencilRuler class="absolute top-4 -left-8 text-text" />
-							<div class="flex justify-between">
-                <h2 class="pt-4 pl-4">
-                  {item.descricao}
-                </h2>
-								<span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
-							</div>
-              <span class="opacity-70 text-sm pb-2 pl-4">
-                  Estado de Conservação:
-                  {item.estadoDeConservacao}
-              </span>
+              <a href={`/item/${item.id}/${item.type}`}>
+                <PencilRuler class="absolute top-4 -left-8 text-text" />
+                <div class="flex justify-between">
+                  <h2 class="pt-4 pl-4">
+                    {item.descricao}
+                  </h2>
+                  <span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
+                </div>
+                <span class="opacity-70 text-sm pb-2 pl-4">
+                    Estado de Conservação:
+                    {item.estadoDeConservacao}
+                </span>
+            </a>
 						</li>
 					{/if}
 				{/each}

@@ -5,7 +5,7 @@ import { tryingToLoadUser } from "../stores/user";
 
 export function createRoute(
   path: string,
-  func: () => void,
+  func: (ctx, next) => void,
   options?: {
     middlewares: (() => boolean)[];
   }

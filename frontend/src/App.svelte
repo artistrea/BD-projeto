@@ -2,9 +2,12 @@
   import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
+  import ItemPage from './pages/ItemPage.svelte';
+  import CreateItemPage from './pages/createItemPage.svelte';
   import type { ComponentType } from "svelte";
   import { user } from "./stores/user"
   import router, {  createRoute } from "./router/index"
+    import EditItemPage from './pages/editItemPage.svelte';
 
   let page: ComponentType;
   let params: any;
@@ -35,6 +38,24 @@
       () => requireAuthLoggedIn("estudante")
     ]
   });
+
+  createRoute("/item/:id/:type", (ctx) => {page = ItemPage; params=ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("estudante")
+    ],
+  })
+
+  createRoute("/novoItem", () => page = CreateItemPage, {
+    middlewares: [
+      () => requireAuthLoggedIn("chefe")
+    ]
+  })
+
+  createRoute("/item/edit/:id/:type", (ctx) => {page = EditItemPage; params=ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("chefe")
+    ]
+  })
 
   router.start()
 </script>
