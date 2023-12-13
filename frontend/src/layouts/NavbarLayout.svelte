@@ -24,8 +24,11 @@
     <li>
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/">Menu</a>
     </li>
-    <li>
+    <li class="flex">
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/inventario">Inventário</a>
+      {#if $user?.funcao === "administrador"}
+        <a class="block py-2 px-4 hover:bg-background transition-colors" href="/admin">Gerenciar Usuários</a>
+      {/if}
     </li>
     <li>
       <button on:click={logoutAccount} class="block py-2 px-4 hover:bg-background transition-colors">Sair</button>

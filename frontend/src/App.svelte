@@ -1,6 +1,7 @@
 <script lang="ts">
   import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
+  import AdminPage from './pages/AdminPage.svelte';
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import type { ComponentType } from "svelte";
   import { user } from "./stores/user"
@@ -29,6 +30,12 @@
     router.redirect("/login");
     return false;
   }
+
+  createRoute("/admin", () => page = AdminPage, {
+    middlewares: [
+      () => requireAuthLoggedIn("administrador")
+    ]
+  });
 
   createRoute("/inventario", () => page = HomePage, {
     middlewares: [
