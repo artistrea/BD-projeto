@@ -33,9 +33,9 @@
                 onGoing_loan.dataDeDevolucaoPrevista = today.toISOString()
                 api.put(`loan/${loan.userId}/${loan.itemId}/${loan.itemType}`, onGoing_loan).then((res) => {
                     alert("Pedido de Empréstimo Aceito.")
-                    window.location.reload()
                 }).catch((er) => alert(er.message + ' 1'))
             }
+            window.location.reload()
         }).catch((er) => alert(er.message))
 
     }
