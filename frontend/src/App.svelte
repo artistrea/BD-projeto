@@ -1,6 +1,10 @@
 <script lang="ts">
   import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
+  import UsersPage from './pages/UsersPage.svelte';
+  import UserInfoPage from './pages/UserInfoPage.svelte';
+  import EditUserPege from './pages/editUserPage.svelte';
+  import CreateUserPage from './pages/createUserPage.svelte';
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import ItemPage from './pages/ItemPage.svelte';
   import CreateItemPage from './pages/createItemPage.svelte';
@@ -34,6 +38,30 @@
     router.redirect("/login");
     return false;
   }
+
+  createRoute("/users", () => page = UsersPage, {
+    middlewares: [
+      () => requireAuthLoggedIn("chefe")
+    ]
+  });
+
+  createRoute("/novoUsuario", () => page = CreateUserPage, {
+    middlewares: [
+      () => requireAuthLoggedIn("administrador")
+    ]
+  });
+
+  createRoute("/user/:id", (ctx) => {page = UserInfoPage; params=ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("chefe")
+    ],
+  })
+
+  createRoute("/user/edit/:id", (ctx) => {page = EditUserPege; params=ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("administrador")
+    ],
+  })
 
   createRoute("/inventario", () => page = HomePage, {
     middlewares: [

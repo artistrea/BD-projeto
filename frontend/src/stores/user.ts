@@ -34,6 +34,11 @@ export async function login(email: string, password: string) {
     });
 }
 
+export async function logout() {
+  console.log("logout");
+  return api.post("/auth/logout_em_todos_aparelhos");
+}
+
 export async function refetchCurrentUser() {
   console.log(1);
   return api.post("/user/atual").then((res) => {
