@@ -1,7 +1,8 @@
 <script lang="ts">
   import HomePage from './pages/InventoryPage.svelte'
   import LoginPage from "./pages/LoginPage.svelte";
-  import AdminPage from './pages/AdminPage.svelte';
+  import UsersPage from './pages/UsersPage.svelte';
+  import UserInfoPage from './pages/UserInfoPage.svelte';
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import type { ComponentType } from "svelte";
   import { user } from "./stores/user"
@@ -31,9 +32,15 @@
     return false;
   }
 
-  createRoute("/admin", () => page = AdminPage, {
+  createRoute("/users", () => page = UsersPage, {
     middlewares: [
-      () => requireAuthLoggedIn("administrador")
+      () => requireAuthLoggedIn("chefe")
+    ]
+  });
+
+  createRoute("/user/:id", (ctx) => {page = UserInfoPage; params = ctx.params}, {
+    middlewares: [
+      () => requireAuthLoggedIn("chefe")
     ]
   });
 
