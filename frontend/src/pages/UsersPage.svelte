@@ -45,7 +45,7 @@
               </a>
             </li>
 					{/if}
-                    {#if user.funcao === "chefe"}
+          {#if user.funcao === "chefe"}
 						<li class="bg-text text-background text-opacity-90 rounded relative">
               <a href={`/user/${user.id}`}>
                 <KeyRound class="absolute top-4 -left-8 text-primary" />
@@ -62,7 +62,7 @@
               </a>
 						</li>
 					{/if}
-                    {#if user.funcao === "administrador"}
+          {#if user.funcao === "administrador"}
 						<li class="bg-red-800 text-background text-opacity-90 rounded relative">
               <a href={`/user/${user.id}`}>
                 <ShieldHalf class="absolute top-4 -left-8 text-primary" />
