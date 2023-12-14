@@ -10,6 +10,9 @@
 ├── backend                         <- Backend típico em Flask
 
 ```
+## Documentação do Projeto
+A documentação pode ser encontrada em
+[artistrea.github.io/BDocs](https://artistrea.github.io/BDocs/)
 
 ## Rodando o Projeto
 
@@ -54,5 +57,5 @@ pip install -r requirements.txt
 E então rodar o projeto:
 
 ```bash
-python app.py
+python3 -m flask --app src/app run --debug
 ```
