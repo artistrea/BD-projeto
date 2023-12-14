@@ -29,6 +29,9 @@
       {#if $user?.funcao === "administrador" || $user?.funcao === "chefe"}
         <a class="block py-2 px-4 hover:bg-background transition-colors" href="/users">Gerenciar Usuários</a>
       {/if}
+      {#if $user?.funcao === "administrador"}
+        <a class="block py-2 px-4 hover:bg-background transition-colors" href="/novoUsuario">Novo Usuário</a>
+      {/if}
     </li>
     <li>
       <button on:click={logoutAccount} class="block py-2 px-4 hover:bg-background transition-colors">Sair</button>

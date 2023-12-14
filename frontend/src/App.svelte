@@ -3,7 +3,8 @@
   import LoginPage from "./pages/LoginPage.svelte";
   import UsersPage from './pages/UsersPage.svelte';
   import UserInfoPage from './pages/UserInfoPage.svelte';
-  import EditUserPege from './pages/editUserPege.svelte';
+  import EditUserPege from './pages/editUserPage.svelte';
+  import CreateUserPage from './pages/createUserPage.svelte';
   import NavbarLayout from "./layouts/NavbarLayout.svelte";
   import type { ComponentType } from "svelte";
   import { user } from "./stores/user"
@@ -36,6 +37,12 @@
   createRoute("/users", () => page = UsersPage, {
     middlewares: [
       () => requireAuthLoggedIn("chefe")
+    ]
+  });
+
+  createRoute("/novoUsuario", () => page = CreateUserPage, {
+    middlewares: [
+      () => requireAuthLoggedIn("administrador")
     ]
   });
 
