@@ -90,6 +90,19 @@ def route_deleteItem(itemType, id):
     items.deleteItem(id, itemType)
     return item
 
+
+@app.route("/items/search/<query>", methods=[ "GET" ])
+@cross_origin()
+def route_searchItems(query):
+    return items.searchItem(query)
+
+@app.route("/items/isAvailable/<itemType>/<id>", methods=[ "GET" ])
+@cross_origin()
+def route_item_isAvailabe(itemType, id):
+    if loans.getLoanByItemAndStatus(id, itemType, "emAndamento"):
+        return {'available' : False}
+    return {'available' : True}
+
 @app.route("/auth/login", methods=["POST"])
 @cross_origin()
 def login():
@@ -280,7 +293,7 @@ def getLoanRoute(id):
     if cur_user is None:
         return { "message": "Unauthorized" }, 401
     
-    if auth.authorize_chief(cur_user):
+    if auth.authorize_chief(cur_user) or str(cur_user['id']) == id:
         lns = loans.getLoanByUserId(id)
         if lns is None:
             return { "message": "Not found" }, 404
@@ -322,11 +335,12 @@ def deleteLoanRoute(user_id, item_id):
 @app.route("/loan/<user_id>", methods=[ "PUT" ])
 @cross_origin()
 def updateLoanRoute(user_id):
+    user_id = int(user_id)
     cur_user = auth.get_current_user()
 
     if cur_user is None: return { "message": "Unauthorized" }, 401
 
-    can_edit = auth.authorize_admin(cur_user) or str(cur_user["id"]) == user_id
+    can_edit = auth.authorize_chief(cur_user) or str(cur_user["id"]) == user_id
 
     if not can_edit: return { "message": "Unauthorized" }, 401
 
@@ -356,3 +370,22 @@ def updateLoanRoute(user_id):
     updated_loan = loans.updateLoan(body)
 
     return updated_loan
+
+@app.route("/loan/<userId>/<itemId>/<itemType>", methods=[ "PUT" ])
+@cross_origin()
+def acceptLoanRoute(userId, itemId, itemType):
+    if not auth.authorize_chief():
+        return { "message" : "Unauthorized" }, 401
+    body = request.json
+    valid_body = validate_json(body, loans.update_loan_schema)
+
+    dataDeEmprestimo = body['dataDeEmprestimo']
+    if not valid_body:
+        return { "message": "Wrong parameters" }, 400
+    
+    loan = loans.getLoan(userId, itemId, itemType, dataDeEmprestimo)
+
+    for key,value in body.items():
+        loan[key] = value
+
+    return loans.updateLoan(loan)

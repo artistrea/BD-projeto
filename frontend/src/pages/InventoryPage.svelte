@@ -7,15 +7,26 @@
 	// // const dataUrl = `https://newsapi.org/v2/everything?q=javascript&sortBy=publishedAt&apiKey=${apiKEY}`;
   let items = [];
 	let selectedTypes = [];
+  let query = ''
+
 	function fetchData() {
-		api.get("/items").then((res) => {
-			items = res.data;
-		}).catch((er) => alert(er.message))
+    if (query == '') {
+      api.get("/items").then((res) => {
+        items = res.data;
+      }).catch((er) => alert(er.message))
+    } else {
+      api.get(`/items/search/${query}`).then((res) => {
+        items = res.data;
+      }).catch((er) => alert(er.message))
+    }
 
 		return () => {};
     };
     
 	onMount(fetchData());
+  
+  $: fetchData
+
 </script>
 <div class="pl-20 flex justify-between relative">
 	<div class="py-8 mx-auto">
@@ -27,40 +38,48 @@
 			É necessário um admin ou chefe de laboratório para consumar o empréstimo.
 		</p>
 
+    <div class="flex flex-col mt-2">
+			<input class="bg-transparent border-2 border-secondary rounded-md px-4 py-2" placeholder="Pesquisa, por Categoria, Título, Autor ou Descrição" type="text" id="login" bind:value={query} on:input={fetchData}>
+		</div>
+
 		<main class="mt-2">
 			<ul class="flex flex-col gap-4 p-8">
 				{#each items.filter((item) => selectedTypes.length === 0 || selectedTypes.some(t => t === item.type)) as item (item.id ?? item.ISBN)}
 					{#if item.type === "livro"}
 						<li class="bg-primary text-background text-opacity-90 rounded relative">
-              <BookOpenText class="absolute top-4 -left-8 text-primary" />
-							<div class="flex justify-between">
-                <h2 class="pt-4 pb-2 pl-4">
-									<span class="text-xl">{item.title}</span>
-									<br>
-									<span class="opacity-70 text-sm">
-										{item.author}
-									</span>
-								</h2>
-								<span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
-							</div>
-              <p class="w-[40ch] leading-7 mb-4 ml-6 overflow-ellipsis overflow-hidden line-clamp-3">
-                {item.descricao}
-              </p>
+              <a href={`/item/${item.id}/${item.type}`}>
+                <BookOpenText class="absolute top-4 -left-8 text-primary" />
+                <div class="flex justify-between">
+                  <h2 class="pt-4 pb-2 pl-4">
+                    <span class="text-xl">{item.title}</span>
+                    <br>
+                    <span class="opacity-70 text-sm">
+                      {item.author}
+                    </span>
+                  </h2>
+                  <span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
+                </div>
+                <p class="w-[40ch] leading-7 mb-4 ml-6 overflow-ellipsis overflow-hidden line-clamp-3">
+                  {item.descricao}
+                </p>
+            </a>
 						</li>
 					{/if}
 					{#if item.type === "materialDidatico"}
 						<li class="bg-text text-background text-opacity-90 rounded relative">
-              <PencilRuler class="absolute top-4 -left-8 text-text" />
-							<div class="flex justify-between">
-                <h2 class="pt-4 pl-4">
-                  {item.descricao}
-                </h2>
-								<span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
-							</div>
-              <span class="opacity-70 text-sm pb-2 pl-4">
-                  Estado de Conservação:
-                  {item.estadoDeConservacao}
-              </span>
+              <a href={`/item/${item.id}/${item.type}`}>
+                <PencilRuler class="absolute top-4 -left-8 text-text" />
+                <div class="flex justify-between">
+                  <h2 class="pt-4 pl-4">
+                    {item.descricao}
+                  </h2>
+                  <span class="text-sm font-bold rounded-bl bg-accent py-2 px-3 h-min ">{item.categoria}</span>
+                </div>
+                <span class="opacity-70 text-sm pb-2 pl-4">
+                    Estado de Conservação:
+                    {item.estadoDeConservacao}
+                </span>
+            </a>
 						</li>
 					{/if}
 				{/each}

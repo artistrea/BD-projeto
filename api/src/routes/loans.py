@@ -2,21 +2,34 @@ import db
 import routes.auth as auth
 
 def getAllLoans():
-    loans = db.executeQuery('SELECT * FROM "Emprestimos"')
-
+    loans = db.executeQuery('SELECT * FROM "Emprestimos" INNER JOIN "Usuarios" ON "Emprestimos"."userId" = "Usuarios"."id" ORDER BY "dataDeEmprestimo" DESC')
     return loans
 
 
 
 def getLoanByUserId(user_id):
-    loans = db.executeQuery('SELECT * FROM "Emprestimos" WHERE "userId"=%s', (user_id,))
+    loans = db.executeQuery('SELECT * FROM "Emprestimos" WHERE "userId"=%s ORDER BY "dataDeEmprestimo" DESC ', (user_id,))
 
     if len(loans) == 0:
         return None
     
     return loans
 
+def getLoanByItemAndStatus(item_id, item_type, status):
+    loans = db.executeQuery('SELECT * FROM "Emprestimos" WHERE "itemId"=%s AND "itemType"=%s AND "status"=%s ORDER BY "dataDeEmprestimo" DESC', (item_id,item_type, status))
 
+    if len(loans) == 0:
+        return None
+    
+    return loans
+
+def getLoan(userId, itemId, itemType, dataDeEmprestimo):
+    loan = db.executeQuery('SELECT * FROM "Emprestimos" WHERE "userId"=%s AND "dataDeEmprestimo"=%s AND "itemId"=%s AND "itemType"=%s', (userId, dataDeEmprestimo, itemId, itemType))
+
+    if not loan:
+        return None
+    
+    return loan[0]
 
 create_loan_schema = {
     "type": "object",
@@ -48,25 +61,22 @@ update_loan_schema = {
     "type": "object",
     "properties": {
         "dataDeEmprestimo":         { "type": "string", "format": "date-time" },
-        "userId":                   { "not": {} },
+        "userId":                   { "type": 'number' },
         "dataDeDevolucaoPrevista":  { "type": "string", "format": "date-time" },
         "status":                   { "enum": ["emAndamento", "concluido", "pedido"] },
         "itemId":                   { "type": "number" },
         "itemType":                 { "enum": ["livro", "materialDidatico"] }
     },
-    "additionalProperties": False
 }
 
 def updateLoan(update_loan_info):
     updated_loan =  auth.secure_format_loan(db.executeQuery('''
         UPDATE "Emprestimos"
         SET 
-            "dataDeDevolucaoPrevista"=%(dataDeDevolucaoPrevista)s, 
-            "itemId"=%(itemId)s, 
-            "itemType"=%(itemType)s,
+            "dataDeDevolucaoPrevista"=%(dataDeDevolucaoPrevista)s,
             "status"=%(status)s
-        WHERE "dataDeEmprestimo"=%(dataDeEmprestimo)s AND "userId"=%(userId)s
-        RETURNING "Emprestimos".*;
+        WHERE "dataDeEmprestimo"=%(dataDeEmprestimo)s AND "userId"=%(userId)s AND "itemId"= %(itemId)s AND "itemType"=%(itemType)s
+        RETURNING *;
         ''', update_loan_info
         )[0])
 
@@ -93,3 +103,12 @@ def deleteLoan(user_id, data_de_emprestimo, item_id, item_type):
     )
 
     return response
+
+def acceptLoan(loan):
+    db.executeCommand('''
+                        UPDATE "Emprestimos"
+                        SET 
+                            "dataDeDevolucaoPrevista"=%(dataDeDevolucaoPrevista)s,
+                            "status"=%(status)s
+                        WHERE "dataDeEmprestimo"=%(dataDeEmprestimo)s AND "userId"=%(userId)s AND "itemId"=%{itemId}s AND "itemType=%{itemType}s    
+                      ''', loan)

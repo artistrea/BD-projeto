@@ -25,8 +25,11 @@
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/">Menu</a>
     </li>
     <li class="flex">
+      <a class="block py-2 px-4 hover:bg-background transition-colors" href="/meusEmprestimos">Meus Empréstimos</a>
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/inventario">Inventário</a>
       {#if $user?.funcao === "administrador" || $user?.funcao === "chefe"}
+        <a class="block py-2 px-4 hover:bg-background transition-colors" href="/novoItem">Novo Item</a>
+        <a class="block py-2 px-4 hover:bg-background transition-colors" href="/gerenciarEmprestimos">Gerenciar Emprestimos</a>
         <a class="block py-2 px-4 hover:bg-background transition-colors" href="/users">Gerenciar Usuários</a>
       {/if}
       {#if $user?.funcao === "administrador"}
