@@ -69,6 +69,12 @@
     ]
   });
 
+  createRoute("/", () => page = HomePage, {
+    middlewares: [
+      () => requireAuthLoggedIn("estudante")
+    ]
+  });
+
   createRoute("/item/:id/:type", (ctx) => {page = ItemPage; params=ctx.params}, {
     middlewares: [
       () => requireAuthLoggedIn("estudante")
