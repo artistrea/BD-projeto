@@ -26,7 +26,7 @@
     </li>
     <li class="flex">
       <a class="block py-2 px-4 hover:bg-background transition-colors" href="/inventario">Inventário</a>
-      {#if $user?.funcao === "administrador"}
+      {#if $user?.funcao === "administrador" || $user?.funcao === "chefe"}
         <a class="block py-2 px-4 hover:bg-background transition-colors" href="/users">Gerenciar Usuários</a>
       {/if}
     </li>

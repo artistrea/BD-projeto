@@ -38,11 +38,11 @@
     ]
   });
 
-  createRoute("/user/:id", (ctx) => {page = UserInfoPage; params = ctx.params}, {
+  createRoute("/user/:id", (ctx) => {page = UserInfoPage; params=ctx.params}, {
     middlewares: [
       () => requireAuthLoggedIn("chefe")
-    ]
-  });
+    ],
+  })
 
   createRoute("/inventario", () => page = HomePage, {
     middlewares: [
